@@ -8,7 +8,7 @@ import Form, {
 } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
 
-import * as Grouped from "./GroupedTemplate";
+import GroupedTemplate from "./GroupedTemplate";
 import GroupTemplateRegistry from "./GroupTemplateRegistry";
 import * as UiTemplate from "./UiTemplate";
 import "./styles.css";
@@ -19,7 +19,7 @@ const schema: JSONSchema7 = {
   properties: {
     title: { type: "string", title: "Title", default: "A new task" },
     done: { type: "boolean", title: "Done?", default: false },
-    a: { title: "Field A", type: "string" },
+    a: { title: "This should be hidden", type: "string" },
     b: { title: "Field B", type: "string" },
     c: { title: "Field C", type: "string" },
     d: { title: "Field D", type: "string" },
@@ -62,8 +62,9 @@ const groups: any[] = [
 const uiSchema: UiSchema = {
   "ui:groups": groups,
   "ui:template": (props: ObjectFieldTemplateProps) => (
-    <Grouped.GroupedTemplate {...props} />
+    <GroupedTemplate {...props} />
   ),
+  a: { "ui:options": { label: false } },
   done: {
     "ui:template": CustomFieldTemplate
   }

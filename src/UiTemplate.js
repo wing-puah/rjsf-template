@@ -3,7 +3,7 @@ import {
   DefaultObjectFieldTemplate,
   DefaultFieldTemplate,
   DefaultArrayItem
-} from "./DefaultTemplates";
+} from "./GroupedDefaultTemplates";
 
 /**
  * TODO: Use FormContext to enable string-based templates
@@ -28,7 +28,7 @@ export const ObjectFieldTemplate = defaultOrComponent(
 export const ArrayFieldTemplate = defaultOrComponent(DefaultArrayItem);
 
 function defaultOrComponent(DefaultTemplate) {
-  return function(props) {
+  return function (props) {
     const Template = props.uiSchema["ui:template"];
     if (Template) {
       console.error("Can't render", Template, props);

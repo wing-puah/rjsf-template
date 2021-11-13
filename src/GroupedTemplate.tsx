@@ -5,7 +5,7 @@ import Form, { ObjectFieldTemplateProps } from "@rjsf/core";
 /**
  * This is the main template that renders the various components
  */
-export function GroupedTemplate(props: ObjectFieldTemplateProps) {
+export default function GroupedTemplate(props: ObjectFieldTemplateProps) {
   const {
     TitleField,
     DescriptionField,
