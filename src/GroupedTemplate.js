@@ -1,42 +1,52 @@
 import React from "react";
 
 export function ObjectFieldTemplate(props) {
-  const { TitleField, DescriptionField } = props;
+  const {
+    TitleField,
+    DescriptionField,
+    formContext,
+    required,
+    uiSchema,
+    title,
+    idSchema,
+    description,
+    properties
+  } = props;
 
   return (
-    <fieldset>
-      {(props.uiSchema["ui:title"] || props.title) && (
+    <div className="form__grouped">
+      {(uiSchema["ui:title"] || title) && (
         <TitleField
-          id={`${props.idSchema.$id}__title`}
-          title={props.title || props.uiSchema["ui:title"]}
-          required={props.required}
-          formContext={props.formContext}
+          id={`${idSchema.$id}__title`}
+          title={title || uiSchema["ui:title"]}
+          required={required}
+          formContext={formContext}
         />
       )}
-      {props.description && (
+      {description && (
         <DescriptionField
-          id={`${props.idSchema.$id}__description`}
-          description={props.description}
-          formContext={props.formContext}
+          id={`${idSchema.$id}__description`}
+          description={description}
+          formContext={formContext}
         />
       )}
       {doGrouping({
-        properties: props.properties,
-        groups: props.uiSchema["ui:groups"],
-        props: props
+        properties: properties,
+        groups: uiSchema["ui:groups"],
+        props,
+        formContext
       })}
-    </fieldset>
+    </div>
   );
 }
 
 const REST = Symbol("REST");
 const EXTRANEOUS = Symbol("EXTRANEOUS");
-function doGrouping({ properties, groups, props }) {
+function doGrouping({ properties, groups, props, formContext }) {
   if (!Array.isArray(groups)) {
     return props.map((p) => p.content);
   }
-  const mapped = groups.map((g) => {
-    console.log({ g });
+  const mapped = groups.map((g, idx) => {
     if (typeof g === "string") {
       const found = properties.filter((p) => p.name === g);
       if (found.length === 1) {
@@ -44,15 +54,21 @@ function doGrouping({ properties, groups, props }) {
         return el.content;
       }
       return EXTRANEOUS;
-    } else if (typeof g === "object") {
+    }
+
+    let groupKey = ``;
+    if (typeof g === "object") {
       const { templates } = props.formContext;
       const GroupComponent = templates
         ? templates[g["ui:template"]]
         : DefaultTemplate;
+      const additionalProps = g["ui:props"] || {};
+
       const _properties = Object.keys(g).reduce((acc, key) => {
         const field = g[key];
         if (key.startsWith("ui:")) return acc;
         if (!Array.isArray(field)) return acc;
+        groupKey += `${key}`;
         return [
           ...acc,
           {
@@ -65,7 +81,15 @@ function doGrouping({ properties, groups, props }) {
           }
         ];
       }, []);
-      return <GroupComponent properties={_properties} />;
+
+      return (
+        <GroupComponent
+          key={`${groupKey}-${idx}`}
+          properties={_properties}
+          formContext={formContext}
+          {...additionalProps}
+        />
+      );
     }
     throw new Error("Invalid object type: " + typeof g + " " + g);
   });

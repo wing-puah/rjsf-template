@@ -5,10 +5,12 @@
   "keywords": [],
   "main": "index.tsx",
   "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
     "@rjsf/core": "^3.2.0",
-    "react": "16.3.2",
+    "react": "^17.0.2",
     "react-bootstrap": "0.32.3",
-    "react-dom": "16.3.2",
+    "react-dom": "^17.0.2",
     "react-jsonschema-form": "^1.8.1",
     "react-scripts": "^4.0.3"
   },
