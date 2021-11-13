@@ -1,6 +1,11 @@
 import React from "react";
 
-export function ObjectFieldTemplate(props) {
+import Form, { ObjectFieldTemplateProps } from "@rjsf/core";
+
+/**
+ * This is the main template that renders the various components
+ */
+export function GroupedTemplate(props: ObjectFieldTemplateProps) {
   const {
     TitleField,
     DescriptionField,
@@ -20,14 +25,14 @@ export function ObjectFieldTemplate(props) {
           id={`${idSchema.$id}__title`}
           title={title || uiSchema["ui:title"]}
           required={required}
-          formContext={formContext}
+          // formContext={formContext}
         />
       )}
       {description && (
         <DescriptionField
           id={`${idSchema.$id}__description`}
           description={description}
-          formContext={formContext}
+          // formContext={formContext}
         />
       )}
       {doGrouping({
@@ -40,11 +45,26 @@ export function ObjectFieldTemplate(props) {
   );
 }
 
+//  Partial<
+//   Pick<ObjectFieldTemplateProps, "properties" | "formContext">
+// > &
+type GroupedFormProps = {
+  properties: ObjectFieldTemplateProps["properties"];
+  props: ObjectFieldTemplateProps;
+  groups: unknown;
+  formContext?: ObjectFieldTemplateProps["formContext"];
+};
+
 const REST = Symbol("REST");
 const EXTRANEOUS = Symbol("EXTRANEOUS");
-function doGrouping({ properties, groups, props, formContext }) {
+function doGrouping({
+  properties,
+  groups,
+  props,
+  formContext
+}: GroupedFormProps) {
   if (!Array.isArray(groups)) {
-    return props.map((p) => p.content);
+    return properties.map((p: any) => p.content);
   }
   const mapped = groups.map((g, idx) => {
     if (typeof g === "string") {
@@ -64,7 +84,7 @@ function doGrouping({ properties, groups, props, formContext }) {
         : DefaultTemplate;
       const additionalProps = g["ui:props"] || {};
 
-      const _properties = Object.keys(g).reduce((acc, key) => {
+      const _properties = Object.keys(g).reduce((acc: any, key) => {
         const field = g[key];
         if (key.startsWith("ui:")) return acc;
         if (!Array.isArray(field)) return acc;
@@ -93,10 +113,10 @@ function doGrouping({ properties, groups, props, formContext }) {
     }
     throw new Error("Invalid object type: " + typeof g + " " + g);
   });
-  const remainder = mapped.filter((m) => m === REST);
-  if (remainder.length > 0) {
-    throw new Error("Remainder fields not supported");
-  }
+  // const remainder = mapped.filter((m) => m === REST);
+  // if (remainder.length > 0) {
+  //   throw new Error("Remainder fields not supported");
+  // }
   const extraneous = mapped.filter((m) => m === EXTRANEOUS);
   if (extraneous.length) {
     throw new Error("Extranoues fields" + extraneous);
@@ -105,6 +125,9 @@ function doGrouping({ properties, groups, props, formContext }) {
   return mapped;
 }
 
-function DefaultTemplate(props) {
+type GroupedComponentProps = {
+  properties: any[];
+};
+function DefaultTemplate(props: GroupedComponentProps) {
   return props.properties.map((p) => p.children);
 }

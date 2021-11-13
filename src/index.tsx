@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Form, {
   FieldTemplateProps,
+  ObjectFieldTemplateProps,
   UiSchema,
-  IChangeEvent,
-  FormProps
+  IChangeEvent
 } from "@rjsf/core";
 import { JSONSchema7 } from "json-schema";
 
@@ -32,7 +32,9 @@ const schema: JSONSchema7 = {
   }
 };
 
-const groups = [
+// type GroupSingleValue = string  |  {[k: string]: string | [{}]};
+
+const groups: any[] = [
   "g",
   {
     "Important Fields": ["a", "b"],
@@ -59,8 +61,8 @@ const groups = [
 
 const uiSchema: UiSchema = {
   "ui:groups": groups,
-  "ui:template": (props: FieldTemplateProps) => (
-    <Grouped.ObjectFieldTemplate {...props} />
+  "ui:template": (props: ObjectFieldTemplateProps) => (
+    <Grouped.GroupedTemplate {...props} />
   ),
   done: {
     "ui:template": CustomFieldTemplate
