@@ -9,7 +9,7 @@ import Form, {
 import { JSONSchema7 } from "json-schema";
 
 import * as Grouped from "./GroupedTemplate";
-import * as Templates from "./GroupedRegistry";
+import GroupTemplateRegistry from "./GroupTemplateRegistry";
 import * as UiTemplate from "./UiTemplate";
 import "./styles.css";
 
@@ -115,7 +115,7 @@ ReactDOM.render(
     // transformErrors={log("transformErrors")}
     // liveValidate={true}
     formContext={{
-      templates: Templates.GroupTemplates
+      templates: GroupTemplateRegistry
     }}
     {...UiTemplate}
   />,

@@ -1,13 +1,22 @@
 import React from "react";
 import { Tabs, Tab, Table, Well } from "react-bootstrap";
 
-export const GroupTemplates = {
-  hideshow: (props) => (
+type ElChildrenProps = React.ReactElement;
+type RegistryElProps = {
+  properties: { name: string; children: ElChildrenProps[] }[];
+};
+
+/**
+ * Registry is used to render components that will be matched
+ * with the key specify in groups
+ */
+const GroupTemplateRegistry = {
+  hideshow: (props: RegistryElProps) => (
     <div style={{ background: "grey" }}>
       Hide/show{props.properties.map((p) => p.children)}
     </div>
   ),
-  grid: (props) => {
+  grid: (props: RegistryElProps) => {
     console.log({ props });
     return (
       <Table striped bordered condensed hover>
@@ -24,7 +33,7 @@ export const GroupTemplates = {
       </Table>
     );
   },
-  table: (props) => (
+  table: (props: RegistryElProps) => (
     <Table striped bordered condensed hover>
       <tbody>
         {props.properties.map((p) => (
@@ -36,8 +45,9 @@ export const GroupTemplates = {
       </tbody>
     </Table>
   ),
-  well: (props) => props.properties.map((p) => <Well>{p.children}</Well>),
-  tabs: (props) => {
+  well: (props: RegistryElProps) =>
+    props.properties.map((p) => <Well>{p.children}</Well>),
+  tabs: (props: RegistryElProps) => {
     return (
       <Tabs defaultActiveKey={0} id="uncontrolled-tab-example">
         {props.properties.map((p, idx) => (
@@ -49,3 +59,10 @@ export const GroupTemplates = {
     );
   }
 };
+
+const createGroupedRegistry = (addOnRegistry = {}) => {
+  return { ...GroupTemplateRegistry, ...addOnRegistry };
+};
+
+export { createGroupedRegistry };
+export default GroupTemplateRegistry;
