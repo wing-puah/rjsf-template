@@ -1,12 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Form from "react-jsonschema-form";
-import * as Grouped from "./GroupedSchema";
-import * as Templates from "../src/GroupedRegistry";
+import Form, {
+  FieldTemplateProps,
+  UiSchema,
+  IChangeEvent,
+  FormProps
+} from "@rjsf/core";
+import { JSONSchema7 } from "json-schema";
+
+import * as Grouped from "./GroupedTemplate";
+import * as Templates from "./GroupedRegistry";
 import * as UiTemplate from "./UiTemplate";
 import "./styles.css";
 
-const schema = {
+const schema: JSONSchema7 = {
   title: "Todo",
   type: "object",
   properties: {
@@ -50,15 +57,17 @@ const groups = [
   }
 ];
 
-const uiSchema = {
+const uiSchema: UiSchema = {
   "ui:groups": groups,
-  "ui:template": props => <Grouped.ObjectFieldTemplate {...props} />,
+  "ui:template": (props: FieldTemplateProps) => (
+    <Grouped.ObjectFieldTemplate {...props} />
+  ),
   done: {
     "ui:template": CustomFieldTemplate
   }
 };
 
-function CustomFieldTemplate(props) {
+function CustomFieldTemplate(props: FieldTemplateProps) {
   const {
     id,
     classNames,
@@ -82,7 +91,9 @@ function CustomFieldTemplate(props) {
     </div>
   );
 }
-const log = type => console.log.bind(console, type);
+const log = (event: IChangeEvent, key: "change" | "submitted" | "errors") => {
+  console.log(`${key}: ${event}`);
+};
 
 const rootElement = document.getElementById("root");
 
@@ -90,10 +101,16 @@ ReactDOM.render(
   <Form
     schema={schema}
     uiSchema={uiSchema}
-    onChange={log("changed")}
-    onSubmit={log("submitted")}
-    onError={log("errors")}
-    transformErrors={log("transformErrors")}
+    onChange={(e: IChangeEvent) => {
+      log(e, "change");
+    }}
+    onSubmit={(e: IChangeEvent) => {
+      log(e, "submitted");
+    }}
+    onError={(e: IChangeEvent) => {
+      log(e, "errors");
+    }}
+    // transformErrors={log("transformErrors")}
     // liveValidate={true}
     formContext={{
       templates: Templates.GroupTemplates

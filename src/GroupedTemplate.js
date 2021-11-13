@@ -33,7 +33,7 @@ const REST = Symbol("REST");
 const EXTRANEOUS = Symbol("EXTRANEOUS");
 function doGrouping({ properties, groups, props }) {
   if (!Array.isArray(groups)) {
-    return propList.map((p) => p.content);
+    return props.map((p) => p.content);
   }
   const mapped = groups.map((g) => {
     console.log({ g });
